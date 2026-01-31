@@ -28,18 +28,18 @@ pipeline {
             }
         }
         
-        /*stage('Package') {
+        stage('Package') {
             steps {
                 echo 'Packaging the application...'
                 bat 'mvn package -DskipTests'
             }
             post {
                 success {
-                    archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'target/*.jar'
                     echo "Successfully created JAR file"
                 }
             }
-        }*/
+        }
     }
     
     post {
