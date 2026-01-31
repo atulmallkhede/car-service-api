@@ -1,14 +1,14 @@
 pipeline {
     agent any
     
-    tools {
-        maven 'Maven-3.9.6'
-        jdk 'JDK-21'
-    }
-    
     environment {
+        // Use specific JDK path
+        JAVA_HOME = 'D:\\DevOps Training\\zulu21.48.15-ca-jdk21.0.10-win_x64'
+        PATH = "${env.JAVA_HOME}\\bin;${env.PATH}"
+        
         APP_NAME = 'car-service-api'
         APP_VERSION = '1.0.0'
+        MAVEN_OPTS = '-Xmx1024m'
     }
     
     stages {
@@ -42,8 +42,21 @@ pipeline {
                 echo 'Compiling the application...'
                 bat 'mvn compile'
             }
-        }        
-     
+        }
+        
+        stage('Test') {
+            steps {
+                echo 'Running unit tests...'
+                bat 'mvn test'
+            }
+            post {
+                always {
+                    publishTestResults testResultsPattern: 'target/surefire-reports/*.xml'
+                    archiveArtifacts artifacts: 'target/surefire-reports/**/*', fingerprint: true
+                }
+            }
+        }
+        
         stage('Package') {
             steps {
                 echo 'Packaging the application...'
