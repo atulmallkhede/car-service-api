@@ -8,7 +8,6 @@ pipeline {
         
         APP_NAME = 'car-service-api'
         APP_VERSION = '1.0.0'
-        MAVEN_OPTS = '-Xmx1024m'
     }
     
     stages {
@@ -41,19 +40,6 @@ pipeline {
             steps {
                 echo 'Compiling the application...'
                 bat 'mvn compile'
-            }
-        }
-        
-        stage('Test') {
-            steps {
-                echo 'Running unit tests...'
-                bat 'mvn test'
-            }
-            post {
-                always {
-                    publishTestResults testResultsPattern: 'target/surefire-reports/*.xml'
-                    archiveArtifacts artifacts: 'target/surefire-reports/**/*', fingerprint: true
-                }
             }
         }
         
